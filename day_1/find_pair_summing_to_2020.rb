@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
 
-puts (
-    ARGF.map(&:to_i).permutation do |p|
-        cand = p.each_cons(2).find do |pair|
-            pair.sum == 2020
-        end
-        break cand if cand
+numbers = ARGF.map(&:to_i)
+
+puts (numbers.size.times do |i|
+    trial, *rest = numbers.rotate(i)
+    cand = rest.find do |trial_2|
+        break trial_2 if trial + trial_2 == 2020
     end
-).reduce(:*)
+    break [trial, cand] if cand
+end).reduce(:*)
