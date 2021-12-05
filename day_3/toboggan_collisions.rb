@@ -9,10 +9,30 @@ map = ARGF.map do |line|
     end.compact.reduce(:|)
 end
 
-collisions = map.map.with_index.count do |row, idx|
-    0 != row & (1 << ((idx*3)%map_width))
-end
-
-puts collisions
-
-#binding.pry
+puts (
+    [
+        # part 1: shift left by 3 for every increment of 1 downhill
+        [
+            3,1
+        ],
+        # part 2: four new cases in addition to the one above
+        [
+            1,1,
+            3,1,
+            5,1,
+            7,1,
+            1,2
+        ]
+    ].map.with_index do |steps, idx|
+        format(
+            "part %d: %d collisions",
+            idx.succ,
+            steps.each_slice(2).map do |pair|
+                map.map.with_index.count do |row, idx|
+                    h_pos = Rational(*pair) * idx % map_width
+                    h_pos.denominator == 1 && 0 != row & 1 << h_pos
+                end
+            end.reduce(:*)
+        )
+    end.join("\n")
+)
